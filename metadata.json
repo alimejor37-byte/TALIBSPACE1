@@ -1,0 +1,8 @@
+{
+  "name": "TalibSpace",
+  "description": "Exclusive student community for CMC with premium design and random connections.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

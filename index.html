@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalibSpace | Exclusive CMC Community</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #0a0a0a;
+        }
+        .rtl { direction: rtl; }
+        .ltr { direction: ltr; }
+        
+        .neon-border {
+            box-shadow: 0 0 15px rgba(255, 106, 0, 0.3), inset 0 0 10px rgba(255, 106, 0, 0.1);
+        }
+        
+        .premium-gradient {
+            background: linear-gradient(135deg, #e65100 0%, #ff6a00 50%, #ffb300 100%);
+        }
+
+        .glass {
+            background: rgba(18, 18, 18, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 106, 0, 0.1);
+        }
+
+        .pulse-neon {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(255, 106, 0, 0.4); }
+            70% { transform: scale(1.05); opacity: 0.4; box-shadow: 0 0 0 20px rgba(255, 106, 0, 0); }
+            100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(255, 106, 0, 0); }
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255, 106, 0, 0.05) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .active-glow {
+            filter: drop-shadow(0 0 8px rgba(255, 106, 0, 0.6));
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3d1c00; border-radius: 10px; }
+        
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #ff6a0044;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^18.3.1",
+    "react-dom/": "https://esm.sh/react-dom@^18.3.1/",
+    "react/": "https://esm.sh/react@^18.3.1/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0"
+  }
+}
+</script>
+</head>
+<body class="text-slate-100 overflow-x-hidden selection:bg-orange-500/30">
+    <div id="root"></div>
+</body>
+</html>
