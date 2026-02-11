@@ -58,6 +58,20 @@
             filter: drop-shadow(0 0 8px rgba(255, 106, 0, 0.6));
         }
 
+        .icon-premium {
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-item-btn:hover .icon-premium {
+            filter: drop-shadow(0 0 12px rgba(255, 106, 0, 0.4));
+            transform: scale(1.1);
+        }
+
+        .nav-item-active .icon-premium {
+            filter: drop-shadow(0 0 15px rgba(255, 106, 0, 0.7));
+        }
+
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #3d1c00; border-radius: 10px; }

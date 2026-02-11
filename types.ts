@@ -12,6 +12,16 @@ export interface User {
   points: number;
   level: 'Beginner' | 'Contributor' | 'Elite Member';
   badges: string[];
+  friends?: string[]; // Array of user IDs
+  friendRequests?: FriendRequest[];
+}
+
+export interface FriendRequest {
+  id: string;
+  fromId: string;
+  fromName: string;
+  fromAvatar: string;
+  timestamp: string;
 }
 
 export interface Post {

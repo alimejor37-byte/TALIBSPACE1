@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Language, Theme, User, CallType } from './types';
+import { Language, Theme, User, CallType, FriendRequest } from './types';
 import Layout from './components/Layout';
 import Feed from './components/Feed';
 import Library from './components/Library';
@@ -15,9 +15,10 @@ import LiveEvents from './components/LiveEvents';
 import AIStudyAssistant from './components/AIStudyAssistant';
 import CallOverlay from './components/CallOverlay';
 import Logo from './components/Logo';
+import Friends from './components/Friends';
 import { STRINGS } from './constants';
 
-const MOCK_USER: User = {
+const INITIAL_USER: User = {
   id: 'u1',
   name: 'Amine El Fassi',
   specialty: 'Digital',
@@ -27,7 +28,12 @@ const MOCK_USER: User = {
   skills: ['React', 'TypeScript', 'Node.js', 'UI Design'],
   points: 1250,
   level: 'Contributor',
-  badges: ['Early Adopter', 'Mentor', 'Coder']
+  badges: ['Early Adopter', 'Mentor', 'Coder'],
+  friends: [],
+  friendRequests: [
+    { id: 'req1', fromId: 'u5', fromName: 'Sara Bennani', fromAvatar: 'https://i.pravatar.cc/150?u=sara', timestamp: '10m ago' },
+    { id: 'req2', fromId: 'u9', fromName: 'Anas Lahlou', fromAvatar: 'https://i.pravatar.cc/150?u=anas', timestamp: '1h ago' },
+  ]
 };
 
 const App: React.FC = () => {
@@ -38,6 +44,8 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [callType, setCallType] = useState<CallType>('none');
   const [activePartner, setActivePartner] = useState<{name: string, avatar: string} | undefined>();
+  const [user, setUser] = useState<User>(INITIAL_USER);
+  const [sentRequests, setSentRequests] = useState<string[]>([]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2500);
@@ -59,6 +67,28 @@ const App: React.FC = () => {
   const handleStartCall = (type: CallType, partner?: {name: string, avatar: string}) => {
     setActivePartner(partner);
     setCallType(type);
+  };
+
+  const handleAcceptRequest = (request: FriendRequest) => {
+    setUser(prev => ({
+      ...prev,
+      friends: [...(prev.friends || []), request.fromId],
+      friendRequests: prev.friendRequests?.filter(r => r.id !== request.id),
+      points: prev.points + 50 // Reward for networking
+    }));
+  };
+
+  const handleDeclineRequest = (requestId: string) => {
+    setUser(prev => ({
+      ...prev,
+      friendRequests: prev.friendRequests?.filter(r => r.id !== requestId)
+    }));
+  };
+
+  const handleAddFriend = (id: string) => {
+    setSentRequests(prev => [...prev, id]);
+    // In a real app, this would be an API call
+    console.log(`Friend request sent to ${id}!`);
   };
 
   if (isLoading) {
@@ -139,14 +169,24 @@ const App: React.FC = () => {
       onToggleLang={toggleLang} 
       activeTab={activeTab} 
       setActiveTab={setActiveTab}
-      user={MOCK_USER}
+      user={user}
     >
       <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
         {activeTab === 'feed' && <Feed lang={lang} />}
         {activeTab === 'random' && <RandomConnect lang={lang} onStartCall={handleStartCall} />}
+        {activeTab === 'friends' && (
+          <Friends 
+            lang={lang} 
+            user={user} 
+            onAccept={handleAcceptRequest} 
+            onDecline={handleDeclineRequest} 
+            onAddFriend={handleAddFriend}
+            sentRequests={sentRequests}
+          />
+        )}
         {activeTab === 'resources' && <Library lang={lang} />}
         {activeTab === 'opportunities' && <Opportunities lang={lang} />}
-        {activeTab === 'profile' && <Profile user={MOCK_USER} lang={lang} />}
+        {activeTab === 'profile' && <Profile user={user} lang={lang} />}
         {activeTab === 'announcements' && <Announcements lang={lang} />}
         {activeTab === 'activities' && <Activities lang={lang} />}
         {activeTab === 'messages' && <Messages lang={lang} onStartCall={handleStartCall} />}
