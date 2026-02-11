@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalibSpace | Exclusive CMC Community</title>
+    <title>TalibSpace | Premium Student Community</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,85 +13,98 @@
         body {
             font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            background-color: #0a0a0a;
+            background-color: #050505;
+            color: #e2e8f0;
         }
         .rtl { direction: rtl; }
         .ltr { direction: ltr; }
         
-        .neon-border {
-            box-shadow: 0 0 15px rgba(255, 106, 0, 0.3), inset 0 0 10px rgba(255, 106, 0, 0.1);
-        }
-        
+        /* Premium Design System */
         .premium-gradient {
             background: linear-gradient(135deg, #e65100 0%, #ff6a00 50%, #ffb300 100%);
         }
 
         .glass {
-            background: rgba(18, 18, 18, 0.7);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 106, 0, 0.1);
-        }
-
-        .pulse-neon {
-            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(255, 106, 0, 0.4); }
-            70% { transform: scale(1.05); opacity: 0.4; box-shadow: 0 0 0 20px rgba(255, 106, 0, 0); }
-            100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(255, 106, 0, 0); }
-        }
-
-        .shimmer {
-            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255, 106, 0, 0.05) 50%, rgba(255,255,255,0) 100%);
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
 
         .active-glow {
-            filter: drop-shadow(0 0 8px rgba(255, 106, 0, 0.6));
+            filter: drop-shadow(0 0 12px rgba(255, 106, 0, 0.8));
+        }
+
+        /* Micro-Animations */
+        .hover-3d {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .hover-3d:hover {
+            transform: translateY(-5px) scale(1.02) perspective(1000px) rotateX(2deg);
+            filter: drop-shadow(0 15px 25px rgba(255, 106, 0, 0.2));
         }
 
         .icon-premium {
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .nav-item-btn:hover .icon-premium {
-            filter: drop-shadow(0 0 12px rgba(255, 106, 0, 0.4));
-            transform: scale(1.1);
+            filter: drop-shadow(0 0 15px rgba(255, 106, 0, 0.6));
+            transform: scale(1.15) rotate(3deg);
         }
 
         .nav-item-active .icon-premium {
-            filter: drop-shadow(0 0 15px rgba(255, 106, 0, 0.7));
+            filter: drop-shadow(0 0 20px rgba(255, 106, 0, 0.9));
+            transform: scale(1.1);
         }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3d1c00; border-radius: 10px; }
-        
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #ff6a0044;
+        /* Background Particle Emulation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.5; }
+            100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+        }
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            background: radial-gradient(circle, #ff6a00 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(to bottom, #ff6a0044, #ff6a0088); 
+            border-radius: 10px; 
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Neon Glow SVG Filters */
+        svg .glow-path {
+            filter: drop-shadow(0 0 4px rgba(255, 106, 0, 0.8));
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^18.3.1",
-    "react-dom/": "https://esm.sh/react-dom@^18.3.1/",
-    "react/": "https://esm.sh/react@^18.3.1/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.40.0"
-  }
-}
-</script>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@^18.3.1",
+        "react-dom/": "https://esm.sh/react-dom@^18.3.1/",
+        "react/": "https://esm.sh/react@^18.3.1/",
+        "@google/genai": "https://esm.sh/@google/genai@^1.40.0"
+      }
+    }
+    </script>
 </head>
 <body class="text-slate-100 overflow-x-hidden selection:bg-orange-500/30">
+    <div class="particle w-1 h-1 top-20 left-[10%] opacity-20"></div>
+    <div class="particle w-2 h-2 top-1/2 left-[80%] opacity-10 animate-pulse" style="animation-delay: 2s;"></div>
+    <div class="particle w-1.5 h-1.5 top-3/4 left-[30%] opacity-15" style="animation-delay: 4s;"></div>
+    
     <div id="root"></div>
 </body>
 </html>

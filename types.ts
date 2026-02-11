@@ -1,6 +1,8 @@
 
 export type Specialty = 'Digital' | 'Industrie' | 'Tourisme' | 'Santé' | 'BTP' | 'Agriculture';
 
+export type LanguageLevel = 'Beginner' | 'Intermediate' | 'Advanced';
+
 export interface User {
   id: string;
   name: string;
@@ -14,6 +16,23 @@ export interface User {
   badges: string[];
   friends?: string[]; // Array of user IDs
   friendRequests?: FriendRequest[];
+  languageXP?: Record<string, number>; // Language codes to XP
+  isPremium?: boolean;
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+}
+
+export interface VocabularyWord {
+  word: string;
+  translation: string;
+  example: string;
+  audioUrl?: string;
 }
 
 export interface FriendRequest {

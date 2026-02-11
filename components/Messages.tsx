@@ -2,15 +2,70 @@
 import React, { useState } from 'react';
 import { Language, ChatThread, CallType } from '../types';
 import { STRINGS, MOCK_CHATS } from '../constants';
+import VoiceRecorder from './VoiceRecorder';
+import AudioMessageBubble from './AudioMessageBubble';
 
+interface Message {
+  id: string;
+  sender: 'me' | 'partner';
+  type: 'text' | 'audio';
+  content?: string;
+  audioUrl?: string;
+  duration?: string;
+  timestamp: string;
+}
+
+// Fix: Define the missing MessagesProps interface
 interface MessagesProps {
   lang: Language;
-  onStartCall: (type: CallType, partner?: {name: string, avatar: string}) => void;
+  onStartCall: (type: CallType, partner?: { name: string; avatar: string }) => void;
 }
 
 const Messages: React.FC<MessagesProps> = ({ lang, onStartCall }) => {
   const t = STRINGS[lang];
   const [activeChat, setActiveChat] = useState<ChatThread | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [chatMessages, setChatMessages] = useState<Record<string, Message[]>>({
+    'c1': [
+      { id: '1', sender: 'partner', type: 'text', content: "Khoya, weslti f l'exercice dyal Python? Shuf hadak l-lien li seft lik.", timestamp: '12:30' },
+      { id: '2', sender: 'me', type: 'text', content: "Hani m3ak! I found the bug in the loop. It's working perfectly now. 🚀", timestamp: '12:31' }
+    ]
+  });
+
+  const [messageInput, setMessageInput] = useState('');
+
+  const handleSendText = () => {
+    if (!messageInput.trim() || !activeChat) return;
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      sender: 'me',
+      type: 'text',
+      content: messageInput,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setChatMessages(prev => ({
+      ...prev,
+      [activeChat.id]: [...(prev[activeChat.id] || []), newMessage]
+    }));
+    setMessageInput('');
+  };
+
+  const handleSendAudio = (url: string, duration: string) => {
+    if (!activeChat) return;
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      sender: 'me',
+      type: 'audio',
+      audioUrl: url,
+      duration: duration,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setChatMessages(prev => ({
+      ...prev,
+      [activeChat.id]: [...(prev[activeChat.id] || []), newMessage]
+    }));
+    setIsRecording(false);
+  };
 
   return (
     <div className="h-[75vh] flex rounded-[3.5rem] overflow-hidden border border-orange-500/10 glass relative shadow-2xl">
@@ -67,20 +122,58 @@ const Messages: React.FC<MessagesProps> = ({ lang, onStartCall }) => {
             </div>
             
             <div className="flex-1 p-10 overflow-y-auto flex flex-col space-y-6 custom-scroll bg-[radial-gradient(circle_at_top_right,rgba(255,106,0,0.03),transparent)]">
-               <div className="self-start max-w-[80%] bg-white/5 border border-white/10 p-5 rounded-[2.5rem] rounded-tl-none">
-                  <p className="text-sm font-medium text-slate-200 leading-relaxed">Khoya, weslti f l'exercice dyal Python? Shuf hadak l-lien li seft lik.</p>
-               </div>
-               <div className="self-end max-w-[80%] premium-gradient p-5 rounded-[2.5rem] rounded-tr-none shadow-xl shadow-orange-500/10">
-                  <p className="text-sm font-black text-white leading-relaxed">Hani m3ak! I found the bug in the loop. It's working perfectly now. 🚀</p>
-               </div>
+               {(chatMessages[activeChat.id] || []).map((msg) => (
+                 <div key={msg.id} className={`flex flex-col ${msg.sender === 'me' ? 'items-end' : 'items-start'}`}>
+                   {msg.type === 'text' ? (
+                     <div className={`max-w-[80%] p-5 rounded-[2.5rem] ${msg.sender === 'me' ? 'premium-gradient rounded-tr-none shadow-xl shadow-orange-500/10' : 'bg-white/5 border border-white/10 rounded-tl-none'}`}>
+                        <p className={`text-sm leading-relaxed ${msg.sender === 'me' ? 'font-black text-white' : 'font-medium text-slate-200'}`}>
+                          {msg.content}
+                        </p>
+                     </div>
+                   ) : (
+                     <AudioMessageBubble 
+                       audioUrl={msg.audioUrl!} 
+                       duration={msg.duration!} 
+                       isMe={msg.sender === 'me'} 
+                     />
+                   )}
+                   <span className="text-[9px] font-black text-slate-600 uppercase mt-2 px-2">{msg.timestamp}</span>
+                 </div>
+               ))}
             </div>
             
             <div className="p-8 border-t border-white/5">
-              <div className="flex items-center space-x-4 space-x-reverse">
-                 <button className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-xl hover:scale-110 transition-transform">📎</button>
-                 <input type="text" placeholder="Type a message..." className="flex-1 bg-white/5 border border-white/10 rounded-3xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-white font-medium" />
-                 <button className="w-14 h-14 rounded-2xl premium-gradient flex items-center justify-center text-xl shadow-xl shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all active-glow">🚀</button>
-              </div>
+              {isRecording ? (
+                <VoiceRecorder onSend={handleSendAudio} onCancel={() => setIsRecording(false)} />
+              ) : (
+                <div className="flex items-center space-x-4 space-x-reverse">
+                  <button className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-xl hover:scale-110 transition-transform">📎</button>
+                  <input 
+                    type="text" 
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendText()}
+                    placeholder="Type a message..." 
+                    className="flex-1 bg-white/5 border border-white/10 rounded-3xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-white font-medium" 
+                  />
+                  
+                  {messageInput.trim() ? (
+                    <button 
+                      onClick={handleSendText}
+                      className="w-14 h-14 rounded-2xl premium-gradient flex items-center justify-center text-xl shadow-xl shadow-orange-500/20 hover:scale-105 active:scale-95 transition-all active-glow"
+                    >
+                      🚀
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => setIsRecording(true)}
+                      className="w-14 h-14 rounded-2xl bg-orange-600/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-xl hover:bg-orange-500 hover:text-white transition-all active-glow"
+                    >
+                      🎙️
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </>
         ) : (

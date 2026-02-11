@@ -44,19 +44,20 @@ const Profile: React.FC<ProfileProps> = ({ user, lang }) => {
             </div>
           </div>
 
-          {/* User Stats Section */}
-          <div className="grid grid-cols-3 gap-8 w-full mt-10 p-6 glass rounded-[2.5rem] border-white/5 shadow-inner">
-            <div className="text-center">
-              <p className="text-2xl font-black text-white">{user.points}</p>
-              <p className="text-[10px] font-black text-orange-400 uppercase tracking-widest">{t.points}</p>
+          {/* User Stats Section - Refined for "Premium" feel and prominent Friend Count */}
+          <div className="grid grid-cols-3 gap-6 w-full mt-12 p-8 glass rounded-[3rem] border border-white/5 shadow-2xl relative">
+            <div className="absolute inset-0 shimmer rounded-[3rem] pointer-events-none opacity-10"></div>
+            <div className="text-center relative z-10">
+              <p className="text-3xl font-black text-white drop-shadow-lg">{user.points}</p>
+              <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.2em] mt-1">{t.points}</p>
             </div>
-            <div className="text-center border-x border-white/10">
-              <p className="text-2xl font-black text-white">{user.friends?.length || 0}</p>
-              <p className="text-[10px] font-black text-orange-400 uppercase tracking-widest">{t.friends}</p>
+            <div className="text-center border-x border-white/10 relative z-10">
+              <p className="text-3xl font-black text-orange-500 drop-shadow-[0_0_10px_rgba(255,106,0,0.5)]">{user.friends?.length || 0}</p>
+              <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.2em] mt-1">{t.friends}</p>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-black text-white">{user.badges.length}</p>
-              <p className="text-[10px] font-black text-orange-400 uppercase tracking-widest">Badges</p>
+            <div className="text-center relative z-10">
+              <p className="text-3xl font-black text-white drop-shadow-lg">{user.badges.length}</p>
+              <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.2em] mt-1">Badges</p>
             </div>
           </div>
           
@@ -88,28 +89,6 @@ const Profile: React.FC<ProfileProps> = ({ user, lang }) => {
           <div className="p-8 bg-orange-500/5 rounded-[2.5rem] border-r-8 border-orange-500 italic text-orange-100 text-lg font-medium leading-relaxed shadow-inner">
             "{tip}"
           </div>
-        </div>
-      </div>
-
-      {/* Modern Rules Section */}
-      <div className="glass p-10 rounded-[3.5rem] border border-orange-500/10 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-orange-600/10 rounded-full -mr-24 -mt-24 blur-3xl"></div>
-        <h3 className="text-2xl font-black mb-8 flex items-center space-x-4 space-x-reverse text-white tracking-tight">
-          <span className="text-3xl">🛡️</span>
-          <span>Community Guide</span>
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {[
-            { icon: '✨', text: 'Respect your peers' },
-            { icon: '📂', text: 'Share valid resources' },
-            { icon: '🚫', text: 'No commercial ads' },
-            { icon: '🤝', text: 'Stay helpful' }
-          ].map((item, idx) => (
-            <div key={idx} className="flex items-center space-x-4 space-x-reverse bg-white/5 p-5 rounded-[2rem] border border-white/5 hover:border-orange-500/20 transition-all">
-              <span className="text-2xl">{item.icon}</span>
-              <span className="font-black text-sm text-slate-300 uppercase tracking-widest">{item.text}</span>
-            </div>
-          ))}
         </div>
       </div>
 

@@ -2,17 +2,65 @@
 import React, { useState } from 'react';
 import { Language, Specialty, CallType } from '../types';
 import { STRINGS } from '../constants';
+import VoiceRecorder from './VoiceRecorder';
+import AudioMessageBubble from './AudioMessageBubble';
 
-interface GroupsProps {
-  lang: Language;
-  onStartCall: (type: CallType, partner?: {name: string, avatar: string}) => void;
+interface GroupMessage {
+  id: string;
+  senderName: string;
+  senderAvatar: string;
+  type: 'text' | 'audio';
+  content?: string;
+  audioUrl?: string;
+  duration?: string;
+  timestamp: string;
 }
 
-const filieres: Specialty[] = ['Digital', 'Industrie', 'Tourisme', 'Santé', 'BTP', 'Agriculture'];
+// Fix: Define the missing GroupsProps interface
+interface GroupsProps {
+  lang: Language;
+  onStartCall: (type: CallType, partner?: { name: string; avatar: string }) => void;
+}
 
 const Groups: React.FC<GroupsProps> = ({ lang, onStartCall }) => {
   const t = STRINGS[lang];
   const [activeGroup, setActiveGroup] = useState<Specialty | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [groupMessages, setGroupMessages] = useState<GroupMessage[]>([
+    { id: '1', senderName: 'Mehdi Bennani', senderAvatar: 'https://i.pravatar.cc/100?u=mehdi', type: 'text', content: "Guys, I uploaded the new summaries for Digital Marketing. Check the resources tab!", timestamp: '12:45' },
+    { id: '2', senderName: 'Sara El Amrani', senderAvatar: 'https://i.pravatar.cc/100?u=sara', type: 'text', content: "Thanks Mehdi! Let's review them in the group call tonight at 9PM. Who's in?", timestamp: '12:50' }
+  ]);
+  const [input, setInput] = useState('');
+
+  const handleSendText = () => {
+    if (!input.trim()) return;
+    const newMessage: GroupMessage = {
+      id: Date.now().toString(),
+      senderName: 'Amine El Fassi',
+      senderAvatar: 'https://i.pravatar.cc/100?u=amine',
+      type: 'text',
+      content: input,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setGroupMessages([...groupMessages, newMessage]);
+    setInput('');
+  };
+
+  const handleSendAudio = (url: string, duration: string) => {
+    const newMessage: GroupMessage = {
+      id: Date.now().toString(),
+      senderName: 'Amine El Fassi',
+      senderAvatar: 'https://i.pravatar.cc/100?u=amine',
+      type: 'audio',
+      audioUrl: url,
+      duration: duration,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setGroupMessages([...groupMessages, newMessage]);
+    setIsRecording(false);
+  };
+
+  const filieres: Specialty[] = ['Digital', 'Industrie', 'Tourisme', 'Santé', 'BTP', 'Agriculture'];
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
@@ -77,26 +125,48 @@ const Groups: React.FC<GroupsProps> = ({ lang, onStartCall }) => {
 
            <div className="h-[60vh] flex flex-col glass rounded-[4rem] border border-orange-500/10 p-10 shadow-2xl overflow-hidden relative">
               <div className="absolute top-0 left-0 w-full h-1 premium-gradient opacity-10"></div>
-              <div className="flex-1 overflow-y-auto space-y-6 custom-scroll pr-4">
-                 <div className="bg-white/5 border border-white/10 p-6 rounded-[2.5rem] max-w-[70%] rounded-tl-none">
-                    <div className="flex items-center space-x-2 space-x-reverse mb-2">
-                       <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest">Mehdi Bennani</span>
-                       <span className="text-[9px] text-slate-600 font-bold">12:45</span>
-                    </div>
-                    <p className="text-sm font-medium text-slate-200 leading-relaxed">Guys, I uploaded the new summaries for Digital Marketing. Check the resources tab!</p>
-                 </div>
-                 <div className="bg-white/5 border border-white/10 p-6 rounded-[2.5rem] max-w-[70%] rounded-tl-none">
-                    <div className="flex items-center space-x-2 space-x-reverse mb-2">
-                       <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest">Sara El Amrani</span>
-                       <span className="text-[9px] text-slate-600 font-bold">12:50</span>
-                    </div>
-                    <p className="text-sm font-medium text-slate-200 leading-relaxed">Thanks Mehdi! Let's review them in the group call tonight at 9PM. Who's in?</p>
-                 </div>
+              <div className="flex-1 overflow-y-auto space-y-8 custom-scroll pr-4">
+                 {groupMessages.map(msg => (
+                   <div key={msg.id} className={`flex items-start gap-4 ${msg.senderName.includes('Amine') ? 'flex-row-reverse' : ''}`}>
+                      <img src={msg.senderAvatar} className="w-10 h-10 rounded-xl border-2 border-orange-500/20" alt="avatar" />
+                      <div className={`flex flex-col ${msg.senderName.includes('Amine') ? 'items-end' : 'items-start'}`}>
+                         <div className="flex items-center gap-2 mb-1">
+                            <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest">{msg.senderName}</span>
+                            <span className="text-[8px] text-slate-600 font-bold">{msg.timestamp}</span>
+                         </div>
+                         {msg.type === 'text' ? (
+                           <div className={`p-5 rounded-[2.5rem] bg-white/5 border border-white/10 ${msg.senderName.includes('Amine') ? 'rounded-tr-none' : 'rounded-tl-none'}`}>
+                              <p className="text-sm font-medium text-slate-200 leading-relaxed">{msg.content}</p>
+                           </div>
+                         ) : (
+                           <AudioMessageBubble audioUrl={msg.audioUrl!} duration={msg.duration!} isMe={msg.senderName.includes('Amine')} />
+                         )}
+                      </div>
+                   </div>
+                 ))}
               </div>
-              <div className="pt-8 border-t border-white/5 flex items-center space-x-4 space-x-reverse">
-                 <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-xl hover:bg-white/5 transition-all">📎</div>
-                 <input type="text" placeholder="Chat with your classmates..." className="flex-1 bg-white/5 border border-white/10 rounded-3xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-white font-medium" />
-                 <button className="w-14 h-14 rounded-2xl premium-gradient flex items-center justify-center text-xl shadow-xl shadow-orange-500/30 active:scale-95 active-glow">🚀</button>
+              
+              <div className="pt-8 border-t border-white/5">
+                {isRecording ? (
+                  <VoiceRecorder onSend={handleSendAudio} onCancel={() => setIsRecording(false)} />
+                ) : (
+                  <div className="flex items-center space-x-4 space-x-reverse">
+                    <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-xl hover:bg-white/5 transition-all">📎</div>
+                    <input 
+                      type="text" 
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSendText()}
+                      placeholder="Chat with your classmates..." 
+                      className="flex-1 bg-white/5 border border-white/10 rounded-3xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-white font-medium" 
+                    />
+                    {input.trim() ? (
+                      <button onClick={handleSendText} className="w-14 h-14 rounded-2xl premium-gradient flex items-center justify-center text-xl shadow-xl shadow-orange-500/30 active:scale-95 active-glow">🚀</button>
+                    ) : (
+                      <button onClick={() => setIsRecording(true)} className="w-14 h-14 rounded-2xl bg-orange-600/10 border border-orange-500/20 text-orange-500 flex items-center justify-center text-xl hover:bg-orange-500 hover:text-white transition-all active-glow">🎙️</button>
+                    )}
+                  </div>
+                )}
               </div>
            </div>
         </div>

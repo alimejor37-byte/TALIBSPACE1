@@ -5,6 +5,14 @@ export const STRINGS = {
   [Language.AR]: {
     appName: 'TalibSpace',
     welcome: 'مرحبا بيك فـ فضاء طلبة CMC',
+    languageRoom: 'غرفة اللغات',
+    practice: 'مارس اللغة مع خوتك',
+    wordOfDay: 'كلمة اليوم',
+    startQuiz: 'بدا الكويز',
+    partnerMatch: 'شريك عشوائي',
+    pointsAwarded: 'زتي نقط في اللغة!',
+    raiseHand: 'هز يدك',
+    correctMe: 'صحح ليا',
     login: 'دخول',
     signup: 'تسجيل',
     studentOnly: 'هاد الفضاء حصري لطلبة CMC فقط',
@@ -53,10 +61,30 @@ export const STRINGS = {
     ongoingCall: 'مكالمة جارية...',
     points: 'نقطة',
     level: 'المستوى',
+    premiumUnlock: 'فتح المميزات الممتازة',
+    premiumActive: 'الاشتراك الممتاز نشط',
+    subscribeTooltip: 'اشترك لفتح ميزات حصرية',
+    weekly: 'أسبوعي',
+    monthly: 'شهري',
+    yearly: 'سنوي',
+    premiumFeatures: [
+      'وصول لغرف اللغات الخاصة',
+      'زيادة نقاط XP',
+      'تطابقات عشوائية أسرع',
+      'شارات حصرية للملف الشخصي'
+    ]
   },
   [Language.FR]: {
     appName: 'TalibSpace',
     welcome: 'Bienvenue sur TalibSpace CMC',
+    languageRoom: 'Language Room',
+    practice: 'Pratiquez avec vos pairs',
+    wordOfDay: 'Mot du Jour',
+    startQuiz: 'Démarrer le Quiz',
+    partnerMatch: 'Partenaire Aléatoire',
+    pointsAwarded: 'Points XP gagnés !',
+    raiseHand: 'Lever la main',
+    correctMe: 'Corrige-moi',
     login: 'Connexion',
     signup: 'Inscription',
     studentOnly: 'Espace exclusif aux étudiants CMC',
@@ -105,10 +133,30 @@ export const STRINGS = {
     ongoingCall: 'Appel en cours...',
     points: 'Points',
     level: 'Niveau',
+    premiumUnlock: 'Débloquer le Premium',
+    premiumActive: 'Premium Actif',
+    subscribeTooltip: 'Abonnez-vous pour débloquer les fonctionnalités exclusives',
+    weekly: 'Hebdomadaire',
+    monthly: 'Mensuel',
+    yearly: 'Annuel',
+    premiumFeatures: [
+      'Accès aux salons de langue exclusifs',
+      'Boost de points XP',
+      'Matchs aléatoires prioritaires',
+      'Badges de profil exclusifs'
+    ]
   },
   [Language.EN]: {
     appName: 'TalibSpace',
     welcome: 'Welcome to TalibSpace CMC',
+    languageRoom: 'Language Room',
+    practice: 'Practice with the squad',
+    wordOfDay: 'Word of the Day',
+    startQuiz: 'Start Quiz',
+    partnerMatch: 'Random Partner',
+    pointsAwarded: 'XP Points Awarded!',
+    raiseHand: 'Raise Hand',
+    correctMe: 'Correct Me',
     login: 'Login',
     signup: 'Sign Up',
     studentOnly: 'Exclusive for CMC Students only',
@@ -157,7 +205,54 @@ export const STRINGS = {
     ongoingCall: 'Ongoing Call...',
     points: 'Points',
     level: 'Level',
+    premiumUnlock: 'Unlock Premium',
+    premiumActive: 'Premium Active',
+    subscribeTooltip: 'Subscribe to unlock exclusive features',
+    weekly: 'Weekly',
+    monthly: 'Monthly',
+    yearly: 'Yearly',
+    premiumFeatures: [
+      'Access to specialized language rooms',
+      'XP point boosts',
+      'Priority random matching',
+      'Exclusive profile badges'
+    ]
   }
+};
+
+export const LANGUAGE_ROOMS = [
+  { id: 'en', name: 'English Room', icon: '🇬🇧', students: 42, level: 'Advanced', type: 'Public Room', bg: 'from-blue-600/10 to-indigo-600/10' },
+  { id: 'fr', name: 'French Room', icon: '🇫🇷', students: 28, level: 'Intermediate', type: 'Public Room', bg: 'from-blue-400/10 to-red-400/10' },
+  { id: 'es', name: 'Spanish Room', icon: '🇪🇸', students: 12, level: 'Beginner', type: 'Public Room', bg: 'from-yellow-400/10 to-red-500/10' },
+  { id: 'de', name: 'German Room', icon: '🇩🇪', students: 8, level: 'Advanced', type: 'Public Room', bg: 'from-zinc-400/10 to-yellow-600/10' },
+];
+
+export const PREMIUM_ROOMS = [
+  { id: 'speak', name: 'Speaking Practice', icon: '🎤', students: 15, level: 'B2+', type: 'Voice Only', desc: 'No text allowed. Just pure oral practice and peer-to-peer feedback.', active: true, premium: true },
+  { id: 'debate', name: 'Debate Club', icon: '🎥', students: 6, level: 'C1', type: 'Video Enabled', desc: 'Structured arguments and high-level vocabulary practice.', active: true, premium: true },
+  { id: 'study', name: 'Study Session', icon: '📚', students: 24, level: 'All', type: 'Silent/Chat', desc: 'Focus with lo-fi beats and peer support via text.', active: true, premium: true },
+];
+
+export const MOCK_QUIZ = {
+  en: [
+    { id: 'q1', question: 'Which word describes a very successful person in their field?', options: ['Maverick', 'Amateur', 'Pioneer', 'Intern'], correctIndex: 2, explanation: 'A pioneer is someone who is among the first to explore or settle a new country or area or develop a new method.' },
+  ],
+  fr: [
+    { id: 'q1', question: 'Comment dit-on "Internship" en Français?', options: ['Travail', 'Stage', 'Apprentissage', 'Vacances'], correctIndex: 1, explanation: 'Un stage est une période de pratique en entreprise.' },
+  ],
+  es: [
+    { id: 'q1', question: '¿Cómo se dice "Friend" en español?', options: ['Amigo', 'Enemigo', 'Hermano', 'Padre'], correctIndex: 0, explanation: 'Amigo es la palabra estándar para friend.' },
+  ],
+  de: [
+     { id: 'q1', question: 'Wie sagt man "Thank you" auf Deutsch?', options: ['Bitte', 'Danke', 'Guten Tag', 'Hallo'], correctIndex: 1, explanation: 'Danke ist das deutsche Wort für thank you.' },
+  ]
+};
+
+export const WORD_OF_THE_DAY = {
+  en: { word: 'Resilient', translation: 'صامد / مرن', example: 'Students are resilient despite the exam stress.' },
+  fr: { word: 'Épanouissement', translation: 'ازدهار / تفتح', example: 'Le sport contribue à l\'épanouissement personnel.' },
+  es: { word: 'Entusiasmo', translation: 'حماس', example: 'Tiene mucho entusiasmo por aprender.' },
+  de: { word: 'Leidenschaft', translation: 'شغف', example: 'Musik ist meine Leidenschaft.' },
 };
 
 export const MOCK_POSTS = [

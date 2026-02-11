@@ -13,7 +13,9 @@ import Messages from './components/Messages';
 import Groups from './components/Groups';
 import LiveEvents from './components/LiveEvents';
 import AIStudyAssistant from './components/AIStudyAssistant';
+import LanguageRoom from './components/LanguageRoom';
 import CallOverlay from './components/CallOverlay';
+import PremiumModal from './components/PremiumModal';
 import Logo from './components/Logo';
 import Friends from './components/Friends';
 import { STRINGS } from './constants';
@@ -29,11 +31,13 @@ const INITIAL_USER: User = {
   points: 1250,
   level: 'Contributor',
   badges: ['Early Adopter', 'Mentor', 'Coder'],
-  friends: [],
+  friends: ['u10', 'u11'],
   friendRequests: [
     { id: 'req1', fromId: 'u5', fromName: 'Sara Bennani', fromAvatar: 'https://i.pravatar.cc/150?u=sara', timestamp: '10m ago' },
     { id: 'req2', fromId: 'u9', fromName: 'Anas Lahlou', fromAvatar: 'https://i.pravatar.cc/150?u=anas', timestamp: '1h ago' },
-  ]
+  ],
+  languageXP: { 'en': 450, 'fr': 200 },
+  isPremium: false
 };
 
 const App: React.FC = () => {
@@ -46,11 +50,29 @@ const App: React.FC = () => {
   const [activePartner, setActivePartner] = useState<{name: string, avatar: string} | undefined>();
   const [user, setUser] = useState<User>(INITIAL_USER);
   const [sentRequests, setSentRequests] = useState<string[]>([]);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2500);
     return () => clearTimeout(timer);
   }, []);
+
+  const showNotification = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const awardXP = (amount: number) => {
+    // Premium boost: 1.5x points
+    const actualAmount = user.isPremium ? Math.floor(amount * 1.5) : amount;
+    setUser(prev => ({
+      ...prev,
+      points: prev.points + actualAmount
+    }));
+    const t = STRINGS[lang];
+    showNotification(`+${actualAmount} XP! ${(t as any).pointsAwarded || 'Points Awarded'}`);
+  };
 
   const toggleLang = () => {
     setLang(prev => {
@@ -74,8 +96,9 @@ const App: React.FC = () => {
       ...prev,
       friends: [...(prev.friends || []), request.fromId],
       friendRequests: prev.friendRequests?.filter(r => r.id !== request.id),
-      points: prev.points + 50 // Reward for networking
+      points: prev.points + 50
     }));
+    showNotification(`Added ${request.fromName} to your squad! +50 pts`);
   };
 
   const handleDeclineRequest = (requestId: string) => {
@@ -83,12 +106,19 @@ const App: React.FC = () => {
       ...prev,
       friendRequests: prev.friendRequests?.filter(r => r.id !== requestId)
     }));
+    showNotification(`Request declined.`);
   };
 
   const handleAddFriend = (id: string) => {
+    if (sentRequests.includes(id)) return;
     setSentRequests(prev => [...prev, id]);
-    // In a real app, this would be an API call
-    console.log(`Friend request sent to ${id}!`);
+    showNotification(`Friend request sent!`);
+  };
+
+  const handleSubscribe = () => {
+    setUser(prev => ({ ...prev, isPremium: true }));
+    setShowPremiumModal(false);
+    showNotification("Welcome to TalibSpace Premium! 🚀");
   };
 
   if (isLoading) {
@@ -170,10 +200,17 @@ const App: React.FC = () => {
       activeTab={activeTab} 
       setActiveTab={setActiveTab}
       user={user}
+      onOpenPremium={() => setShowPremiumModal(true)}
     >
       <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+        {notification && (
+          <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[60] bg-orange-600 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-2xl active-glow animate-in slide-in-from-top-4">
+            {notification}
+          </div>
+        )}
         {activeTab === 'feed' && <Feed lang={lang} />}
-        {activeTab === 'random' && <RandomConnect lang={lang} onStartCall={handleStartCall} />}
+        {activeTab === 'random' && <RandomConnect lang={lang} onStartCall={handleStartCall} user={user} />}
+        {activeTab === 'languageRoom' && <LanguageRoom lang={lang} onStartCall={handleStartCall} onAwardXP={awardXP} user={user} onOpenPremium={() => setShowPremiumModal(true)} />}
         {activeTab === 'friends' && (
           <Friends 
             lang={lang} 
@@ -202,6 +239,14 @@ const App: React.FC = () => {
           partnerAvatar={activePartner?.avatar} 
           lang={lang} 
           onEnd={() => setCallType('none')} 
+        />
+      )}
+
+      {showPremiumModal && (
+        <PremiumModal 
+          lang={lang} 
+          onClose={() => setShowPremiumModal(false)} 
+          onSubscribe={handleSubscribe} 
         />
       )}
     </Layout>
